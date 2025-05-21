@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -15,12 +15,10 @@ import TransactionHistoryPage from "@/pages/transaction-history";
 import ExitConfirmationPage from "@/pages/exit-confirmation";
 import TimeoutWarningPage from "@/pages/timeout-warning";
 import SessionEndedPage from "@/pages/session-ended";
-import { useATM } from "./contexts/atm-context";
+import { ATMProvider } from "./contexts/atm-context";
 import { Notification } from "./components/ui/notification";
 
 function Router() {
-  const { currentScreen } = useATM();
-
   return (
     <Switch>
       <Route path="/" component={WelcomePage} />
@@ -46,7 +44,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Notification />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
