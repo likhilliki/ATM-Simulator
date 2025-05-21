@@ -141,6 +141,7 @@ function App() {
               
               <Button 
                 className="btn-primary text-left p-4 rounded-lg flex items-center"
+                onClick={() => navigateTo("change-pin")}
               >
                 <Key className="mr-3" />
                 <div>
@@ -442,7 +443,20 @@ function App() {
             </div>
             
             <div className="mb-4">
-              <h3 className="text-lg font-medium mb-2">Recent Transactions</h3>
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-lg font-medium">Recent Transactions</h3>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="text-sm flex items-center"
+                  onClick={() => {
+                    alert("Transaction history downloaded successfully!");
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Download
+                </Button>
+              </div>
               
               <div className="space-y-3">
                 <div className="border border-gray-200 rounded-lg bg-white p-3">
@@ -568,6 +582,98 @@ function App() {
               >
                 <LogOut className="mr-2" />
                 Yes, End Session
+              </Button>
+            </div>
+          </div>
+        );
+        
+      case "change-pin":
+        return (
+          <div className="fade-in">
+            <div className="flex items-center mb-6">
+              <Button variant="ghost" className="mr-3 p-2" onClick={() => navigateTo("main-menu")}>
+                <ArrowLeft className="text-primary" />
+              </Button>
+              <h2 className="text-xl font-bold">Change PIN</h2>
+            </div>
+            
+            <div className="mb-6 text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-2">
+                <Key className="text-primary" size={24} />
+              </div>
+              <h3 className="font-medium mb-1">Enter Your New PIN</h3>
+              <p className="text-sm text-gray-600">
+                Your PIN must be 4 digits and should be kept confidential.
+              </p>
+            </div>
+            
+            <div className="mb-6">
+              <div className="pin-display flex justify-center space-x-3 my-6">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div 
+                    key={index}
+                    className="w-10 h-10 border-2 border-gray-300 rounded-md flex items-center justify-center"
+                  >
+                    {pin.length > index && "●"}
+                  </div>
+                ))}
+              </div>
+              
+              <div className="num-pad grid grid-cols-3 gap-3 max-w-xs mx-auto">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+                  <Button
+                    key={num}
+                    variant="outline"
+                    className="bg-white text-text-primary font-medium text-xl h-14 rounded-md shadow-sm border border-gray-200"
+                    onClick={() => setPin(prev => prev.length < 4 ? prev + num : prev)}
+                  >
+                    {num}
+                  </Button>
+                ))}
+                
+                <Button
+                  variant="outline"
+                  className="bg-white text-error font-medium h-14 rounded-md shadow-sm border border-gray-200 flex items-center justify-center"
+                  onClick={() => setPin(prev => prev.slice(0, -1))}
+                >
+                  <X size={20} />
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="bg-white text-text-primary font-medium text-xl h-14 rounded-md shadow-sm border border-gray-200"
+                  onClick={() => setPin(prev => prev.length < 4 ? prev + "0" : prev)}
+                >
+                  0
+                </Button>
+                
+                <Button
+                  className="bg-primary text-white font-medium h-14 rounded-md shadow-sm flex items-center justify-center"
+                  disabled={pin.length < 4}
+                  onClick={() => {
+                    if (pin.length === 4) {
+                      alert("PIN changed successfully!");
+                      setPin("");
+                      navigateTo("main-menu");
+                    }
+                  }}
+                >
+                  <CheckCircle size={20} />
+                </Button>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3 mt-8">
+              <Button 
+                variant="outline"
+                className="btn-secondary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
+                onClick={() => {
+                  setPin("");
+                  navigateTo("main-menu");
+                }}
+              >
+                <X className="mr-2" />
+                Cancel
               </Button>
             </div>
           </div>
