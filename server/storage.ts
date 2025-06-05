@@ -1,11 +1,11 @@
 import { randomUUID } from "crypto";
-import { 
-  User, 
-  InsertUser, 
-  Account, 
-  InsertAccount, 
-  Transaction, 
-  InsertTransaction 
+import {
+  User,
+  InsertUser,
+  Account,
+  InsertAccount,
+  Transaction,
+  InsertTransaction,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -15,12 +15,12 @@ export interface IStorage {
   getUserByCardNumber(cardNumber: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   verifyPin(cardNumber: string, pin: string): Promise<boolean>;
-  
+
   // Account operations
   getAccount(userId: number): Promise<Account | undefined>;
   createAccount(account: InsertAccount): Promise<Account>;
   updateAccountBalance(accountId: number, newBalance: number): Promise<Account>;
-  
+
   // Transaction operations
   getTransactions(accountId: number, limit?: number): Promise<Transaction[]>;
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
@@ -41,7 +41,7 @@ export class MemStorage implements IStorage {
     this.userIdCounter = 1;
     this.accountIdCounter = 1;
     this.transactionIdCounter = 1;
-    
+
     // Add a demo user and account
     this.initializeDemoData();
   }
@@ -53,7 +53,7 @@ export class MemStorage implements IStorage {
       username: "demo_user",
       password: "password",
       pin: "1234",
-      cardNumber: "4111111111111234"
+      cardNumber: "4111111111111234",
     };
     this.users.set(demoUser.id, demoUser);
 
@@ -62,9 +62,9 @@ export class MemStorage implements IStorage {
       id: this.accountIdCounter++,
       userId: demoUser.id,
       balance: 2547.63,
-      availableCredit: 5000.00,
-      withdrawalLimit: 1000.00,
-      lastUpdated: new Date()
+      availableCredit: 5000.0,
+      withdrawalLimit: 1000.0,
+      lastUpdated: new Date(),
     };
     this.accounts.set(demoAccount.id, demoAccount);
 
@@ -73,18 +73,18 @@ export class MemStorage implements IStorage {
       {
         accountId: demoAccount.id,
         type: "deposit",
-        amount: 2450.00,
+        amount: 2450.0,
         description: "Salary Deposit",
         timestamp: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000), // 15 days ago
-        transactionId: `TRX-${this.generateRandomTrxId()}`
+        transactionId: `TRX-${this.generateRandomTrxId()}`,
       },
       {
         accountId: demoAccount.id,
         type: "withdrawal",
-        amount: -200.00,
+        amount: -200.0,
         description: "ATM Withdrawal",
         timestamp: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000), // 12 days ago
-        transactionId: `TRX-${this.generateRandomTrxId()}`
+        transactionId: `TRX-${this.generateRandomTrxId()}`,
       },
       {
         accountId: demoAccount.id,
@@ -92,22 +92,22 @@ export class MemStorage implements IStorage {
         amount: -85.23,
         description: "Bill Payment - Electricity",
         timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
-        transactionId: `TRX-${this.generateRandomTrxId()}`
+        transactionId: `TRX-${this.generateRandomTrxId()}`,
       },
       {
         accountId: demoAccount.id,
         type: "deposit",
-        amount: 650.00,
+        amount: 650.0,
         description: "Deposit",
         timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-        transactionId: `TRX-${this.generateRandomTrxId()}`
-      }
+        transactionId: `TRX-${this.generateRandomTrxId()}`,
+      },
     ];
 
-    transactions.forEach(txn => {
+    transactions.forEach((txn) => {
       const transaction: Transaction = {
         ...txn,
-        id: this.transactionIdCounter++
+        id: this.transactionIdCounter++,
       };
       this.transactions.set(transaction.id, transaction);
     });
@@ -123,13 +123,13 @@ export class MemStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
-      (user) => user.username === username
+      (user) => user.username === username,
     );
   }
 
   async getUserByCardNumber(cardNumber: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
-      (user) => user.cardNumber === cardNumber
+      (user) => user.cardNumber === cardNumber,
     );
   }
 
@@ -147,7 +147,7 @@ export class MemStorage implements IStorage {
 
   async getAccount(userId: number): Promise<Account | undefined> {
     return Array.from(this.accounts.values()).find(
-      (account) => account.userId === userId
+      (account) => account.userId === userId,
     );
   }
 
@@ -159,36 +159,42 @@ export class MemStorage implements IStorage {
     return account;
   }
 
-  async updateAccountBalance(accountId: number, newBalance: number): Promise<Account> {
+  async updateAccountBalance(
+    accountId: number,
+    newBalance: number,
+  ): Promise<Account> {
     const account = this.accounts.get(accountId);
     if (!account) {
       throw new Error(`Account with ID ${accountId} not found`);
     }
-    
+
     const updatedAccount: Account = {
       ...account,
       balance: newBalance,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
-    
+
     this.accounts.set(accountId, updatedAccount);
     return updatedAccount;
   }
 
   async getTransactions(accountId: number, limit = 10): Promise<Transaction[]> {
     return Array.from(this.transactions.values())
-      .filter(txn => txn.accountId === accountId)
+      .filter((txn) => txn.accountId === accountId)
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
       .slice(0, limit);
   }
 
-  async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
+  async createTransaction(
+    insertTransaction: InsertTransaction,
+  ): Promise<Transaction> {
     const id = this.transactionIdCounter++;
     const transaction: Transaction = {
       ...insertTransaction,
       id,
       timestamp: new Date(),
-      transactionId: insertTransaction.transactionId || `TRX-${this.generateRandomTrxId()}`
+      transactionId:
+        insertTransaction.transactionId || `TRX-${this.generateRandomTrxId()}`,
     };
     this.transactions.set(id, transaction);
     return transaction;
