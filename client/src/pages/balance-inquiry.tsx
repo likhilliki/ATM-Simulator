@@ -11,6 +11,10 @@ export default function BalanceInquiryPage() {
     queryKey: ['/api/accounts/details'],
   });
   
+  const { data: balanceData, isLoading: balanceLoading } = useQuery({
+    queryKey: ['/api/accounts/balance'],
+  });
+  
   const handleBack = () => {
     navigateTo("/main-menu");
   };
@@ -23,9 +27,9 @@ export default function BalanceInquiryPage() {
     showNotification("Receipt printed successfully", "success");
   };
   
-  const formattedBalance = isLoading 
+  const formattedBalance = (isLoading || balanceLoading) 
     ? "Loading..." 
-    : `$${Number(accountDetails?.balance).toFixed(2)}`;
+    : `$${Number(balanceData?.balance || accountDetails?.balance).toFixed(2)}`;
   
   const formattedDateTime = new Date().toLocaleString('en-US', {
     day: 'numeric',
@@ -63,13 +67,13 @@ export default function BalanceInquiryPage() {
           <div className="flex justify-between mb-2">
             <div className="text-sm text-gray-500">Available Credit</div>
             <div className="font-medium">
-              ${isLoading ? "..." : Number(accountDetails?.availableCredit).toFixed(2)}
+              ${(isLoading || balanceLoading) ? "..." : Number(balanceData?.availableCredit || accountDetails?.availableCredit).toFixed(2)}
             </div>
           </div>
           <div className="flex justify-between">
             <div className="text-sm text-gray-500">Daily Withdrawal Limit</div>
             <div className="font-medium">
-              ${isLoading ? "..." : Number(accountDetails?.withdrawalLimit).toFixed(2)}
+              ${(isLoading || balanceLoading) ? "..." : Number(balanceData?.withdrawalLimit || accountDetails?.withdrawalLimit).toFixed(2)}
             </div>
           </div>
         </div>

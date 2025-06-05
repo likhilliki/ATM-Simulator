@@ -11,6 +11,10 @@ export default function WithdrawalConfirmationPage() {
     queryKey: ['/api/accounts/details'],
   });
   
+  const { data: balanceData, isLoading: balanceLoading } = useQuery({
+    queryKey: ['/api/accounts/balance'],
+  });
+  
   const handleBack = () => {
     navigateTo("/withdrawal");
   };
@@ -19,7 +23,7 @@ export default function WithdrawalConfirmationPage() {
     navigateTo("/transaction-success");
   };
   
-  if (isLoading) {
+  if (isLoading || balanceLoading) {
     return (
       <ATMLayout>
         <div className="flex flex-col items-center justify-center h-80">
@@ -32,7 +36,7 @@ export default function WithdrawalConfirmationPage() {
   }
   
   // Calculate new balance
-  const currentBalance = Number(accountDetails?.balance) || 0;
+  const currentBalance = Number(balanceData?.balance || accountDetails?.balance) || 0;
   const newBalance = currentBalance - (withdrawalAmount || 0);
   
   return (
