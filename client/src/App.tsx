@@ -37,8 +37,25 @@ function ATMApp() {
   const [pin, setPin] = useState<string>("");
   const [pinError, setPinError] = useState<boolean>(false);
 
-  const handleCardInsert = () => {
-    navigateTo("pin-entry");
+  const handleCardInsert = async () => {
+    try {
+      // First verify the card
+      const cardResponse = await fetch("/api/auth/verify-card", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cardNumber: "4111111111111234" }),
+      });
+
+      if (cardResponse.ok) {
+        navigateTo("pin-entry");
+      } else {
+        console.error("Card verification failed");
+      }
+    } catch (error) {
+      console.error("Card insertion error:", error);
+    }
   };
 
   const handlePinEnter = async (enteredPin: string) => {
