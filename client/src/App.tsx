@@ -45,6 +45,7 @@ function ATMApp() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Include session cookies
         body: JSON.stringify({ cardNumber: "4111111111111234" }),
       });
 
@@ -66,6 +67,7 @@ function ATMApp() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Include session cookies
         body: JSON.stringify({ pin: enteredPin }),
       });
 
