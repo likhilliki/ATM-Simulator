@@ -175,10 +175,100 @@ function App() {
         );
         
       case "balance-inquiry":
-        return <BalanceInquiryPage />;
+        return (
+          <div className="fade-in">
+            <div className="flex items-center mb-6">
+              <Button variant="ghost" className="mr-3 p-2" onClick={() => navigateTo("main-menu")}>
+                <ArrowLeft className="text-primary" />
+              </Button>
+              <h2 className="text-xl font-bold">Balance Inquiry</h2>
+            </div>
+            
+            <div className="bg-blue-50 rounded-lg p-5 mb-6">
+              <div className="text-sm text-gray-500 mb-1">Available Balance</div>
+              <div className="text-3xl font-bold text-primary">$2,547.63</div>
+              <div className="mt-3 text-sm text-gray-600">
+                From account ending in <span>1234</span>
+              </div>
+            </div>
+            
+            <div className="border-t border-gray-200 py-4 mb-6">
+              <div className="flex justify-between mb-2">
+                <div className="text-sm text-gray-500">Account Type:</div>
+                <div className="font-medium">Checking</div>
+              </div>
+              <div className="flex justify-between mb-2">
+                <div className="text-sm text-gray-500">Available Credit:</div>
+                <div className="font-medium">$5,000.00</div>
+              </div>
+              <div className="flex justify-between">
+                <div className="text-sm text-gray-500">Daily Withdrawal Limit:</div>
+                <div className="font-medium">$1,000.00</div>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3">
+              <Button 
+                variant="outline"
+                className="btn-secondary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
+                onClick={() => alert("Receipt printed successfully!")}
+              >
+                <Printer className="mr-2" />
+                Print Receipt
+              </Button>
+              <Button 
+                className="btn-primary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
+                onClick={() => navigateTo("main-menu")}
+              >
+                <Home className="mr-2" />
+                Done
+              </Button>
+            </div>
+          </div>
+        );
         
       case "withdrawal":
-        return <WithdrawalPage />;
+        return (
+          <div className="fade-in">
+            <div className="flex items-center mb-6">
+              <Button variant="ghost" className="mr-3 p-2" onClick={() => navigateTo("main-menu")}>
+                <ArrowLeft className="text-primary" />
+              </Button>
+              <h2 className="text-xl font-bold">Cash Withdrawal</h2>
+            </div>
+            
+            <div className="mb-6 text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-2">
+                <DollarSign className="text-primary" size={24} />
+              </div>
+              <p className="text-gray-500">Select the amount you would like to withdraw</p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              {[20, 40, 60, 80, 100, 200].map(amount => (
+                <Button
+                  key={amount}
+                  variant="outline"
+                  className="bg-white text-text-primary font-medium text-lg h-14 rounded-lg shadow-sm border border-gray-200"
+                  onClick={() => handleWithdrawalAmountSelect(amount)}
+                >
+                  ${amount}
+                </Button>
+              ))}
+            </div>
+            
+            <div className="flex space-x-3">
+              <Button 
+                variant="outline"
+                className="btn-secondary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
+                onClick={() => navigateTo("main-menu")}
+              >
+                <X className="mr-2" />
+                Cancel
+              </Button>
+            </div>
+          </div>
+        );
         
       case "withdrawal-confirmation":
         return (
