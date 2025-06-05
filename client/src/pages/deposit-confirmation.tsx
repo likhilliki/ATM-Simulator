@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ATMLayout } from "@/components/ui/atm-layout";
 import { Button } from "@/components/ui/button";
 import { useATM } from "@/contexts/atm-context";
 import { ArrowLeft, CheckCircle, DollarSign } from "lucide-react";
@@ -64,12 +63,10 @@ export default function DepositConfirmationPage() {
   const newBalance = currentBalance + depositAmount;
 
   return (
-    <ATMLayout>
-      <div className="text-center mb-6 fade-in">
-        <DollarSign className="text-primary text-4xl mb-2 mx-auto" />
-        <h2 className="text-xl font-bold mb-1">Confirm Deposit</h2>
-        <p className="text-gray-500 text-sm">Please confirm the amount to deposit</p>
-      </div>
+    <div className="text-center mb-6 fade-in">
+      <DollarSign className="text-primary text-4xl mb-2 mx-auto" />
+      <h2 className="text-xl font-bold mb-1">Confirm Deposit</h2>
+      <p className="text-gray-500 text-sm">Please confirm the amount to deposit</p>
 
       <div className="bg-green-50 rounded-lg p-5 mb-6 text-center">
         <div className="text-sm text-gray-500 mb-1">Deposit Amount</div>
@@ -118,6 +115,6 @@ export default function DepositConfirmationPage() {
           {depositMutation.isPending ? "Processing..." : "Deposit Cash"}
         </Button>
       </div>
-    </ATMLayout>
+    </div>
   );
 }
