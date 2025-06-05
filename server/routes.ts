@@ -259,77 +259,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return res.status(200).json({ message: "Session refreshed" });
   });
 
-  // Withdrawal endpoint
-  app.post("/api/accounts/withdraw", async (req: Request, res: Response) => {
+  app.post("/api/transactions/deposit", requireAuth, async (req, res) => {
+    const userId = req.session.userId;
+    const { amount } = req.body;
+
     try {
-      const { amount } = req.body;
+      // Validate amount
+      const validatedAmount = amountSchema.parse(Number(amount));
 
-      if (!amount || amount <= 0) {
-        return res.status(400).json({ error: "Invalid amount" });
+      // Check deposit limit
+      if (validatedAmount > 10000) {
+        return res.status(400).json({ message: "Amount exceeds daily deposit limit of $10,000" });
       }
 
-      // Get current balance
-      const balance = storage.getItem("balance") || "2547.63";
-      const currentBalance = parseFloat(balance);
+      const account = await storage.getAccount(userId!);
 
-      if (amount > currentBalance) {
-        return res.status(400).json({ error: "Insufficient funds" });
+      if (!account) {
+        return res.status(404).json({ message: "Account not found" });
       }
 
-      // Update balance
-      const newBalance = currentBalance - amount;
-      storage.setItem("balance", newBalance.toString());
+      // Update account balance
+      const newBalance = Number(account.balance) + validatedAmount;
+      const updatedAccount = await storage.updateAccountBalance(account.id, newBalance);
 
-      // Generate transaction ID
-      const transactionId = `TRX-${Math.floor(Math.random() * 100000000)}`;
+      // Create transaction record
+      const transaction = await storage.createTransaction({
+        accountId: account.id,
+        type: "deposit",
+        amount: validatedAmount,
+        description: "Cash Deposit",
+        transactionId: `TRX-${Math.floor(10000000 + Math.random() * 90000000)}`
+      });
 
-      res.json({
-        success: true,
-        transactionId,
-        amount,
-        newBalance,
-        message: "Withdrawal successful"
+      return res.status(200).json({
+        message: "Deposit successful",
+        transaction: {
+          id: transaction.id,
+          transactionId: transaction.transactionId,
+          amount: validatedAmount,
+          timestamp: transaction.timestamp
+        },
+        newBalance: updatedAccount.balance
       });
     } catch (error) {
-      console.error("Withdrawal error:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  // Deposit endpoint
-  app.post("/api/accounts/deposit", async (req: Request, res: Response) => {
-    try {
-      const { amount } = req.body;
-
-      if (!amount || amount <= 0) {
-        return res.status(400).json({ error: "Invalid amount" });
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid amount. Amount must be positive and maximum $10,000." 
+        });
       }
-
-      if (amount > 10000) {
-        return res.status(400).json({ error: "Daily deposit limit is $10,000" });
-      }
-
-      // Get current balance
-      const balance = storage.getItem("balance") || "2547.63";
-      const currentBalance = parseFloat(balance);
-
-      // Update balance
-      const newBalance = currentBalance + amount;
-      storage.setItem("balance", newBalance.toString());
-
-      // Generate transaction ID
-      const transactionId = `TRX-${Math.floor(Math.random() * 100000000)}`;
-
-      res.json({
-        success: true,
-        transactionId,
-        amount,
-        newBalance,
-        message: "Deposit successful"
-      });
-    } catch (error) {
-      console.error("Deposit error:", error);
-      res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   });
 
