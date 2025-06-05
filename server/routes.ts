@@ -1,4 +1,3 @@
-
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -258,6 +257,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/session/refresh", requireAuth, (req, res) => {
     req.session.lastActive = Date.now();
     return res.status(200).json({ message: "Session refreshed" });
+  });
+
+  // Withdrawal endpoint
+  app.post("/api/accounts/withdraw", async (req: Request, res: Response) => {
+    try {
+      const { amount } = req.body;
+
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Invalid amount" });
+      }
+
+      // Get current balance
+      const balance = storage.getItem("balance") || "2547.63";
+      const currentBalance = parseFloat(balance);
+
+      if (amount > currentBalance) {
+        return res.status(400).json({ error: "Insufficient funds" });
+      }
+
+      // Update balance
+      const newBalance = currentBalance - amount;
+      storage.setItem("balance", newBalance.toString());
+
+      // Generate transaction ID
+      const transactionId = `TRX-${Math.floor(Math.random() * 100000000)}`;
+
+      res.json({
+        success: true,
+        transactionId,
+        amount,
+        newBalance,
+        message: "Withdrawal successful"
+      });
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Deposit endpoint
+  app.post("/api/accounts/deposit", async (req: Request, res: Response) => {
+    try {
+      const { amount } = req.body;
+
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Invalid amount" });
+      }
+
+      if (amount > 10000) {
+        return res.status(400).json({ error: "Daily deposit limit is $10,000" });
+      }
+
+      // Get current balance
+      const balance = storage.getItem("balance") || "2547.63";
+      const currentBalance = parseFloat(balance);
+
+      // Update balance
+      const newBalance = currentBalance + amount;
+      storage.setItem("balance", newBalance.toString());
+
+      // Generate transaction ID
+      const transactionId = `TRX-${Math.floor(Math.random() * 100000000)}`;
+
+      res.json({
+        success: true,
+        transactionId,
+        amount,
+        newBalance,
+        message: "Deposit successful"
+      });
+    } catch (error) {
+      console.error("Deposit error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   });
 
   return httpServer;

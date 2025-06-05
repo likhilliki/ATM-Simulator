@@ -6,6 +6,9 @@ import BalanceInquiryPage from "./pages/balance-inquiry";
 import WithdrawalPage from "./pages/withdrawal";
 import WithdrawalConfirmationPage from "./pages/withdrawal-confirmation";
 import TransactionSuccessPage from "./pages/transaction-success";
+import DepositPage from "./pages/deposit";
+import DepositConfirmationPage from "./pages/deposit-confirmation";
+import DepositSuccessPage from "./pages/deposit-success";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ATMLayout } from "@/components/ui/atm-layout";
@@ -130,6 +133,17 @@ function ATMApp() {
               
               <Button 
                 className="btn-primary text-left p-4 rounded-lg flex items-center"
+                onClick={() => navigateTo("deposit")}
+              >
+                <Wallet className="mr-3" />
+                <div>
+                  <div className="font-medium">Cash Deposit</div>
+                  <div className="text-sm text-blue-100">Deposit cash to your account</div>
+                </div>
+              </Button>
+              
+              <Button 
+                className="btn-primary text-left p-4 rounded-lg flex items-center"
                 onClick={() => navigateTo("transaction-history")}
               >
                 <Receipt className="mr-3" />
@@ -182,6 +196,15 @@ function ATMApp() {
         
       case "transaction-success":
         return <TransactionSuccessPage />;
+        
+      case "deposit":
+        return <DepositPage />;
+        
+      case "deposit-confirmation":
+        return <DepositConfirmationPage />;
+        
+      case "deposit-success":
+        return <DepositSuccessPage />;
         
       case "old-withdrawal-confirmation":
         return (

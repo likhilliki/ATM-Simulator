@@ -21,6 +21,8 @@ interface ATMContextType {
   navigateTo: (path: string) => void;
   withdrawalAmount: number | null;
   setWithdrawalAmount: (amount: number | null) => void;
+  depositAmount: number | null;
+  setDepositAmount: (amount: number | null) => void;
   notification: NotificationState | null;
   showNotification: (message: string, type: NotificationType) => void;
   clearNotification: () => void;
@@ -34,6 +36,7 @@ export function ATMProvider({ children }: { children: ReactNode }) {
   const [cardNumber, setCardNumber] = useState<string | null>(null);
   const [currentScreen, setCurrentScreen] = useState<string>("welcome");
   const [withdrawalAmount, setWithdrawalAmount] = useState<number | null>(null);
+  const [depositAmount, setDepositAmount] = useState<number | null>(null);
   const [notification, setNotification] = useState<NotificationState | null>(null);
 
   const navigateTo = useCallback((path: string) => {
@@ -64,6 +67,8 @@ export function ATMProvider({ children }: { children: ReactNode }) {
         navigateTo,
         withdrawalAmount,
         setWithdrawalAmount,
+        depositAmount,
+        setDepositAmount,
         notification,
         showNotification,
         clearNotification,
