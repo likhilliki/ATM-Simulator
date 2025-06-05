@@ -37,9 +37,11 @@ export function ATMProvider({ children }: { children: ReactNode }) {
   const [notification, setNotification] = useState<NotificationState | null>(null);
 
   const navigateTo = useCallback((path: string) => {
-    setLocation(path);
-    setCurrentScreen(path.replace("/", "") || "welcome");
-  }, [setLocation]);
+    // Handle both "/screen-name" and "screen-name" formats
+    const screenName = path.startsWith("/") ? path.slice(1) : path;
+    setCurrentScreen(screenName || "welcome");
+    // Don't use setLocation since we're not using wouter routing in this app
+  }, []);
 
   const showNotification = useCallback((message: string, type: NotificationType = "info") => {
     setNotification({ message, type });
