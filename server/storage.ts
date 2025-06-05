@@ -57,7 +57,7 @@ export class MemStorage implements IStorage {
       id: this.userIdCounter++,
       username: "demo_user",
       password: "password",
-      pin: "1234",
+      pin: "4567",
       cardNumber: "4111111111111234",
     };
     this.users.set(demoUser.id, demoUser);
@@ -222,7 +222,7 @@ async function initializeDemoData() {
         const demoUser = await storage.createUser({
           username: "demo_user",
           password: "password",
-          pin: "1234",
+          pin: "4567",
           cardNumber: "4111111111111234",
         });
 
