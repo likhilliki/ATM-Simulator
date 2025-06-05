@@ -37,7 +37,7 @@ export default function DepositConfirmationPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/accounts/balance'] });
       queryClient.invalidateQueries({ queryKey: ['/api/accounts/details'] });
       queryClient.invalidateQueries({ queryKey: ['/api/transactions/history'] });
-      navigateTo("/deposit-success");
+      navigateTo("deposit-success");
     },
     onError: (error: Error) => {
       console.error("Deposit failed:", error);
@@ -46,7 +46,7 @@ export default function DepositConfirmationPage() {
   });
 
   const handleBack = () => {
-    navigateTo("/deposit");
+    navigateTo("deposit");
   };
 
   const handleProcessDeposit = () => {

@@ -41,11 +41,39 @@ function ATMApp() {
     navigateTo("pin-entry");
   };
   
-  const handlePinEnter = (enteredPin: string) => {
-    // For demo, we'll just check if PIN is 1234
-    if (enteredPin === "1234") {
-      navigateTo("main-menu");
-    } else {
+  const handlePinEnter = async (enteredPin: string) => {
+    try {
+      // First verify card (for demo, using a default card number)
+      const cardResponse = await fetch("/api/auth/verify-card", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cardNumber: "1234567890123456" }),
+      });
+
+      if (!cardResponse.ok) {
+        setPinError(true);
+        return;
+      }
+
+      // Then verify PIN
+      const pinResponse = await fetch("/api/auth/verify-pin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ pin: enteredPin }),
+      });
+
+      if (pinResponse.ok) {
+        navigateTo("main-menu");
+        setPinError(false);
+      } else {
+        setPinError(true);
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
       setPinError(true);
     }
   };

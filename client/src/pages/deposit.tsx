@@ -18,7 +18,7 @@ export default function DepositPage() {
   });
   
   const handleBack = () => {
-    navigateTo("/main-menu");
+    navigateTo("main-menu");
   };
   
   const handleConfirm = () => {
@@ -39,11 +39,11 @@ export default function DepositPage() {
     }
     
     setDepositAmount(amount);
-    navigateTo("/deposit-confirmation");
+    navigateTo("deposit-confirmation");
   };
   
   const handleCancel = () => {
-    navigateTo("/main-menu");
+    navigateTo("main-menu");
   };
   
   const handleAmountSelect = (amount: number) => {
