@@ -18,11 +18,12 @@ export default function WithdrawalConfirmationPage() {
 
   const withdrawalMutation = useMutation({
     mutationFn: async (amount: number) => {
-      const response = await fetch('/api/accounts/withdraw', {
+      const response = await fetch('/api/transactions/withdraw', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ amount }),
       });
       
