@@ -8,6 +8,10 @@ import {
   InsertTransaction,
 } from "@shared/schema";
 import { DatabaseStorage } from "./database";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { users, accounts, transactions } from "./database";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -209,7 +213,7 @@ export const storage = process.env.DATABASE_URL
 
 // Initialize demo data if using database
 async function initializeDemoData() {
-  if (process.env.DATABASE_URL && storage instanceof DatabaseStorage) {
+    if (process.env.DATABASE_URL && storage instanceof DatabaseStorage) {
     try {
       // Check if demo user already exists
       const existingUser = await storage.getUserByCardNumber("4111111111111234");
@@ -271,6 +275,8 @@ async function initializeDemoData() {
     } catch (error) {
       console.error("Failed to initialize demo data:", error);
     }
+  } else if (storage instanceof MemStorage){
+        console.log("Demo data initialized in memory");
   }
 }
 

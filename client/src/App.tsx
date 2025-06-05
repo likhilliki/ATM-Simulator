@@ -40,24 +40,10 @@ function ATMApp() {
   const handleCardInsert = () => {
     navigateTo("pin-entry");
   };
-  
+
   const handlePinEnter = async (enteredPin: string) => {
     try {
-      // First verify card (for demo, using a default card number)
-      const cardResponse = await fetch("/api/auth/verify-card", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ cardNumber: "1234567890123456" }),
-      });
-
-      if (!cardResponse.ok) {
-        setPinError(true);
-        return;
-      }
-
-      // Then verify PIN
+      // Verify PIN
       const pinResponse = await fetch("/api/auth/verify-pin", {
         method: "POST",
         headers: {
@@ -77,19 +63,19 @@ function ATMApp() {
       setPinError(true);
     }
   };
-  
+
   const handleWithdrawalAmountSelect = (amount: number) => {
     setWithdrawalAmount(amount);
     navigateTo("withdrawal-confirmation");
   };
-  
+
   const renderScreen = () => {
     switch (currentScreen) {
       case "welcome":
         return (
           <div className="fade-in">
             <CardReader onCardInsert={handleCardInsert} />
-            
+
             <div className="mt-8 p-4 bg-blue-50 rounded-lg">
               <h3 className="font-medium mb-2 text-primary">Demo Information</h3>
               <p className="text-sm text-gray-600">
@@ -99,7 +85,7 @@ function ATMApp() {
             </div>
           </div>
         );
-        
+
       case "pin-entry":
         return (
           <div className="fade-in">
@@ -110,7 +96,7 @@ function ATMApp() {
               <h2 className="text-xl font-bold">Enter Your PIN</h2>
               <p className="text-gray-500 text-sm mt-1">Please enter your 4-digit PIN code</p>
             </div>
-            
+
             <PinPad 
               onPinEnter={handlePinEnter} 
               onCancel={() => navigateTo("welcome")} 
@@ -119,7 +105,7 @@ function ATMApp() {
             />
           </div>
         );
-        
+
       case "main-menu":
         return (
           <div className="fade-in">
@@ -135,7 +121,7 @@ function ATMApp() {
                 <div className="text-sm text-gray-500">{new Date().toLocaleDateString()}</div>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <Button 
                 className="btn-primary text-left p-4 rounded-lg flex items-center"
@@ -147,7 +133,7 @@ function ATMApp() {
                   <div className="text-sm text-blue-100">Check your account balance</div>
                 </div>
               </Button>
-              
+
               <Button 
                 className="btn-primary text-left p-4 rounded-lg flex items-center"
                 onClick={() => navigateTo("withdrawal")}
@@ -158,7 +144,7 @@ function ATMApp() {
                   <div className="text-sm text-blue-100">Withdraw cash from your account</div>
                 </div>
               </Button>
-              
+
               <Button 
                 className="btn-primary text-left p-4 rounded-lg flex items-center"
                 onClick={() => navigateTo("deposit")}
@@ -169,7 +155,7 @@ function ATMApp() {
                   <div className="text-sm text-blue-100">Deposit cash to your account</div>
                 </div>
               </Button>
-              
+
               <Button 
                 className="btn-primary text-left p-4 rounded-lg flex items-center"
                 onClick={() => navigateTo("transaction-history")}
@@ -180,7 +166,7 @@ function ATMApp() {
                   <div className="text-sm text-blue-100">View recent transactions</div>
                 </div>
               </Button>
-              
+
               <Button 
                 className="btn-primary text-left p-4 rounded-lg flex items-center"
                 onClick={() => navigateTo("change-pin")}
@@ -192,7 +178,7 @@ function ATMApp() {
                 </div>
               </Button>
             </div>
-            
+
             <div className="mt-8 text-center">
               <Button 
                 variant="outline"
@@ -203,7 +189,7 @@ function ATMApp() {
                 End Session
               </Button>
             </div>
-            
+
             <div className="mt-6 bg-blue-50 p-3 rounded-lg text-center text-sm">
               <Timer className="text-primary text-sm align-middle inline-block mr-1" size={16} />
               <span className="text-gray-600">
@@ -212,28 +198,28 @@ function ATMApp() {
             </div>
           </div>
         );
-        
+
       case "balance-inquiry":
         return <BalanceInquiryPage />;
-        
+
       case "withdrawal":
         return <WithdrawalPage />;
-        
+
       case "withdrawal-confirmation":
         return <WithdrawalConfirmationPage />;
-        
+
       case "transaction-success":
         return <TransactionSuccessPage />;
-        
+
       case "deposit":
         return <DepositPage />;
-        
+
       case "deposit-confirmation":
         return <DepositConfirmationPage />;
-        
+
       case "deposit-success":
         return <DepositSuccessPage />;
-        
+
       case "old-withdrawal-confirmation":
         return (
           <div className="fade-in">
@@ -244,7 +230,7 @@ function ATMApp() {
               <h2 className="text-xl font-bold mb-1">Confirm Withdrawal</h2>
               <p className="text-gray-500 text-sm">Please confirm the amount to withdraw</p>
             </div>
-            
+
             <div className="bg-blue-50 rounded-lg p-5 mb-6 text-center">
               <div className="text-sm text-gray-500 mb-1">Withdrawal Amount</div>
               <div className="text-3xl font-bold text-primary">${withdrawalAmount?.toFixed(2)}</div>
@@ -252,7 +238,7 @@ function ATMApp() {
                 From account ending in <span>1234</span>
               </div>
             </div>
-            
+
             <div className="border-t border-gray-200 py-4 mb-6">
               <div className="flex justify-between mb-1">
                 <div className="text-sm text-gray-500">Current Balance:</div>
@@ -267,7 +253,7 @@ function ATMApp() {
                 <div className="font-medium">${(2547.63 - (withdrawalAmount || 0)).toFixed(2)}</div>
               </div>
             </div>
-            
+
             <div className="flex space-x-3">
               <Button 
                 variant="outline"
@@ -287,7 +273,7 @@ function ATMApp() {
             </div>
           </div>
         );
-        
+
       case "transaction-success":
         return (
           <div className="fade-in">
@@ -300,7 +286,7 @@ function ATMApp() {
                 Your cash withdrawal of ${withdrawalAmount?.toFixed(2)} was successful.
               </p>
             </div>
-            
+
             <div className="bg-blue-50 rounded-lg p-5 mb-6">
               <div className="flex justify-between mb-2">
                 <div className="text-sm text-gray-500">Transaction ID:</div>
@@ -319,7 +305,7 @@ function ATMApp() {
                 <div className="font-medium">${(2547.63 - (withdrawalAmount || 0)).toFixed(2)}</div>
               </div>
             </div>
-            
+
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md mb-6">
               <div className="flex">
                 <Info className="text-yellow-500 mr-2" />
@@ -328,7 +314,7 @@ function ATMApp() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex space-x-3">
               <Button 
                 variant="outline"
@@ -347,7 +333,7 @@ function ATMApp() {
             </div>
           </div>
         );
-        
+
       case "transaction-history":
         return (
           <div className="fade-in">
@@ -357,7 +343,7 @@ function ATMApp() {
               </Button>
               <h2 className="text-xl font-bold">Transaction History</h2>
             </div>
-            
+
             <div className="bg-blue-50 rounded-lg p-4 mb-6">
               <div className="text-sm text-gray-500">Account Number</div>
               <div className="font-medium mb-2">
@@ -378,7 +364,7 @@ function ATMApp() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-medium">Recent Transactions</h3>
@@ -394,7 +380,7 @@ function ATMApp() {
                   Download
                 </Button>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="border border-gray-200 rounded-lg bg-white p-3">
                   <div className="flex justify-between items-start">
@@ -412,7 +398,7 @@ function ATMApp() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg bg-white p-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -429,7 +415,7 @@ function ATMApp() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg bg-white p-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -446,7 +432,7 @@ function ATMApp() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg bg-white p-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -465,7 +451,7 @@ function ATMApp() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex space-x-3">
               <Button 
                 variant="outline"
@@ -484,7 +470,7 @@ function ATMApp() {
             </div>
           </div>
         );
-        
+
       case "exit-confirmation":
         return (
           <div className="fade-in">
@@ -497,13 +483,13 @@ function ATMApp() {
                 Are you sure you want to end your session and exit?
               </p>
             </div>
-            
+
             <div className="mb-6 bg-blue-50 p-4 rounded-lg text-center">
               <p className="text-gray-600">
                 Make sure you have completed all your transactions and collected any cash or receipts.
               </p>
             </div>
-            
+
             <div className="flex space-x-3">
               <Button 
                 variant="outline"
@@ -523,7 +509,7 @@ function ATMApp() {
             </div>
           </div>
         );
-        
+
       case "change-pin":
         return (
           <div className="fade-in">
@@ -533,7 +519,7 @@ function ATMApp() {
               </Button>
               <h2 className="text-xl font-bold">Change PIN</h2>
             </div>
-            
+
             <div className="mb-6 text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-2">
                 <Key className="text-primary" size={24} />
@@ -543,7 +529,7 @@ function ATMApp() {
                 Your PIN must be 4 digits and should be kept confidential.
               </p>
             </div>
-            
+
             <div className="mb-6">
               <div className="pin-display flex justify-center space-x-3 my-6">
                 {Array.from({ length: 4 }).map((_, index) => (
@@ -555,7 +541,7 @@ function ATMApp() {
                   </div>
                 ))}
               </div>
-              
+
               <div className="num-pad grid grid-cols-3 gap-3 max-w-xs mx-auto">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                   <Button
@@ -567,7 +553,7 @@ function ATMApp() {
                     {num}
                   </Button>
                 ))}
-                
+
                 <Button
                   variant="outline"
                   className="bg-white text-error font-medium h-14 rounded-md shadow-sm border border-gray-200 flex items-center justify-center"
@@ -575,7 +561,7 @@ function ATMApp() {
                 >
                   <X size={20} />
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   className="bg-white text-text-primary font-medium text-xl h-14 rounded-md shadow-sm border border-gray-200"
@@ -583,7 +569,7 @@ function ATMApp() {
                 >
                   0
                 </Button>
-                
+
                 <Button
                   className="bg-primary text-white font-medium h-14 rounded-md shadow-sm flex items-center justify-center"
                   disabled={pin.length < 4}
@@ -599,7 +585,7 @@ function ATMApp() {
                 </Button>
               </div>
             </div>
-            
+
             <div className="flex space-x-3 mt-8">
               <Button 
                 variant="outline"
@@ -615,7 +601,7 @@ function ATMApp() {
             </div>
           </div>
         );
-        
+
       case "session-ended":
         return (
           <div className="text-center py-10 fade-in">
@@ -624,13 +610,13 @@ function ATMApp() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Session Ended</h2>
             <p className="text-gray-500 mb-8">Thank you for using SecureBank ATM</p>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg text-center mb-8">
               <p className="text-gray-600">
                 Don't forget to take your card, cash, and receipt.
               </p>
             </div>
-            
+
             <Button 
               className="btn-primary rounded-lg py-3 px-6 font-medium flex items-center mx-auto"
               onClick={() => navigateTo("welcome")}
@@ -640,7 +626,7 @@ function ATMApp() {
             </Button>
           </div>
         );
-        
+
       default:
         return <div>Screen not found</div>;
     }
