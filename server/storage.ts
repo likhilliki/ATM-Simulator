@@ -7,6 +7,7 @@ import {
   Transaction,
   InsertTransaction,
 } from "@shared/schema";
+import { DatabaseStorage } from "./database";
 
 export interface IStorage {
   // User operations
@@ -201,7 +202,80 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Initialize storage - use database if available, otherwise use memory
+export const storage = process.env.DATABASE_URL 
+  ? new DatabaseStorage(process.env.DATABASE_URL)
+  : new MemStorage();
+
+// Initialize demo data if using database
+async function initializeDemoData() {
+  if (process.env.DATABASE_URL && storage instanceof DatabaseStorage) {
+    try {
+      // Check if demo user already exists
+      const existingUser = await storage.getUserByCardNumber("4111111111111234");
+      if (!existingUser) {
+        // Create demo user
+        const demoUser = await storage.createUser({
+          username: "demo_user",
+          password: "password",
+          pin: "1234",
+          cardNumber: "4111111111111234",
+        });
+
+        // Create demo account
+        const demoAccount = await storage.createAccount({
+          userId: demoUser.id,
+          balance: "2547.63",
+          availableCredit: "5000.00",
+          withdrawalLimit: "1000.00",
+        });
+
+        // Add demo transactions
+        const demoTransactions = [
+          {
+            accountId: demoAccount.id,
+            type: "deposit",
+            amount: "2450.00",
+            description: "Salary Deposit",
+            transactionId: `TRX-${Math.floor(10000000 + Math.random() * 90000000)}`,
+          },
+          {
+            accountId: demoAccount.id,
+            type: "withdrawal",
+            amount: "-200.00",
+            description: "ATM Withdrawal",
+            transactionId: `TRX-${Math.floor(10000000 + Math.random() * 90000000)}`,
+          },
+          {
+            accountId: demoAccount.id,
+            type: "payment",
+            amount: "-85.23",
+            description: "Bill Payment - Electricity",
+            transactionId: `TRX-${Math.floor(10000000 + Math.random() * 90000000)}`,
+          },
+          {
+            accountId: demoAccount.id,
+            type: "deposit",
+            amount: "650.00",
+            description: "Deposit",
+            transactionId: `TRX-${Math.floor(10000000 + Math.random() * 90000000)}`,
+          },
+        ];
+
+        for (const txn of demoTransactions) {
+          await storage.createTransaction(txn);
+        }
+
+        console.log("Demo data initialized in database");
+      }
+    } catch (error) {
+      console.error("Failed to initialize demo data:", error);
+    }
+  }
+}
+
+// Initialize demo data
+initializeDemoData();
 
 let currentBalance = 2547.63;
 

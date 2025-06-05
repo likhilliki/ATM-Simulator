@@ -113,9 +113,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       return res.status(200).json({
-        balance: account.balance,
-        availableCredit: account.availableCredit,
-        withdrawalLimit: account.withdrawalLimit,
+        balance: typeof account.balance === 'string' ? parseFloat(account.balance) : account.balance,
+        availableCredit: typeof account.availableCredit === 'string' ? parseFloat(account.availableCredit) : account.availableCredit,
+        withdrawalLimit: typeof account.withdrawalLimit === 'string' ? parseFloat(account.withdrawalLimit) : account.withdrawalLimit,
         lastUpdated: account.lastUpdated
       });
     } catch (error) {
@@ -161,7 +161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if sufficient funds
-      if (account.balance < validatedAmount) {
+      const currentBalance = typeof account.balance === 'string' ? parseFloat(account.balance) : account.balance;
+      if (currentBalance < validatedAmount) {
         return res.status(400).json({ message: "Insufficient funds" });
       }
 
@@ -171,7 +172,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Update account balance
-      const newBalance = Number(account.balance) - validatedAmount;
+      const newBalance = currentBalance - validatedAmount;
       const updatedAccount = await storage.updateAccountBalance(account.id, newBalance);
 
       // Create transaction record
@@ -278,8 +279,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Account not found" });
       }
 
+      const currentBalance = typeof account.balance === 'string' ? parseFloat(account.balance) : account.balance;
+      const newBalance = currentBalance + validatedAmount;
+
       // Update account balance
-      const newBalance = Number(account.balance) + validatedAmount;
       const updatedAccount = await storage.updateAccountBalance(account.id, newBalance);
 
       // Create transaction record

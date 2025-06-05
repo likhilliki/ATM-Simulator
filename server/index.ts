@@ -1,10 +1,28 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Initialize database connection
+let db: ReturnType<typeof drizzle> | null = null;
+
+if (process.env.DATABASE_URL) {
+  try {
+    const sql = postgres(process.env.DATABASE_URL);
+    db = drizzle(sql);
+    console.log("Database connected successfully");
+  } catch (error) {
+    console.error("Failed to connect to database:", error);
+  }
+}
+
+// Make db available to routes
+app.locals.db = db;
 
 app.use((req, res, next) => {
   const start = Date.now();
