@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import BalanceInquiryPage from "./pages/balance-inquiry";
+import WithdrawalPage from "./pages/withdrawal";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ATMLayout } from "@/components/ui/atm-layout";
@@ -172,130 +174,10 @@ function App() {
         );
         
       case "balance-inquiry":
-        return (
-          <div className="fade-in">
-            <div className="flex items-center mb-6">
-              <Button variant="ghost" className="mr-3 p-2" onClick={() => navigateTo("main-menu")}>
-                <ArrowLeft className="text-primary" />
-              </Button>
-              <h2 className="text-xl font-bold">Balance Inquiry</h2>
-            </div>
-            
-            <div className="bg-blue-50 rounded-lg p-5 mb-6">
-              <div className="text-sm text-gray-500 mb-1">Available Balance</div>
-              <div className="text-3xl font-bold text-primary">
-                $2,547.63
-              </div>
-              <div className="text-sm text-gray-500 mt-3 mb-1">Account Number</div>
-              <div className="font-medium">
-                **** **** **** 1234
-              </div>
-              <div className="mt-2 text-xs text-gray-500">
-                Last updated: <span>{new Date().toLocaleString()}</span>
-              </div>
-            </div>
-            
-            <div className="border-t border-b border-gray-200 py-4 mb-6">
-              <div className="flex justify-between mb-2">
-                <div className="text-sm text-gray-500">Available Credit</div>
-                <div className="font-medium">
-                  $5,000.00
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="text-sm text-gray-500">Daily Withdrawal Limit</div>
-                <div className="font-medium">
-                  $1,000.00
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
-              <Button 
-                variant="outline"
-                className="btn-secondary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
-              >
-                <Printer className="mr-2" />
-                Print Receipt
-              </Button>
-              <Button 
-                className="btn-primary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
-                onClick={() => navigateTo("main-menu")}
-              >
-                <CheckCircle className="mr-2" />
-                Done
-              </Button>
-            </div>
-          </div>
-        );
+        return <BalanceInquiryPage />;
         
       case "withdrawal":
-        return (
-          <div className="fade-in">
-            <div className="flex items-center mb-6">
-              <Button variant="ghost" className="mr-3 p-2" onClick={() => navigateTo("main-menu")}>
-                <ArrowLeft className="text-primary" />
-              </Button>
-              <h2 className="text-xl font-bold">Cash Withdrawal</h2>
-            </div>
-            
-            <div className="text-sm text-gray-600 mb-4">
-              Please select an amount to withdraw
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              {[20, 50, 100, 200, 500].map((amount) => (
-                <Button
-                  key={amount}
-                  variant="outline"
-                  className="bg-white border border-primary text-primary hover:bg-blue-50 font-medium py-3 rounded-lg"
-                  onClick={() => handleWithdrawalAmountSelect(amount)}
-                >
-                  ${amount}
-                </Button>
-              ))}
-              
-              <Button
-                variant="outline"
-                className="bg-white border border-primary text-primary hover:bg-blue-50 font-medium py-3 rounded-lg"
-              >
-                Custom Amount
-              </Button>
-            </div>
-            
-            <div className="bg-blue-50 rounded-lg p-3 mb-6">
-              <div className="flex justify-between items-center">
-                <div className="text-sm">Available Balance:</div>
-                <div className="font-medium">
-                  $2,547.63
-                </div>
-              </div>
-              <div className="flex justify-between items-center mt-1">
-                <div className="text-sm">Daily Withdrawal Limit:</div>
-                <div className="font-medium">
-                  $1,000.00
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
-              <Button 
-                variant="outline"
-                className="btn-secondary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
-                onClick={() => navigateTo("main-menu")}
-              >
-                <X className="mr-2" />
-                Cancel
-              </Button>
-              <Button 
-                className="btn-primary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
-              >
-                <CheckCircle className="mr-2" />
-                Confirm
-              </Button>
-            </div>
-          </div>
-        );
+        return <WithdrawalPage />;
         
       case "withdrawal-confirmation":
         return (
