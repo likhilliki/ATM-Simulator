@@ -202,3 +202,28 @@ export class MemStorage implements IStorage {
 }
 
 export const storage = new MemStorage();
+
+let currentBalance = 2547.63;
+
+export const store = {
+  getAccountDetails(): AccountDetails {
+    return {
+      cardNumber: "**** **** **** 1234",
+      balance: currentBalance,
+      availableCredit: 5000.00,
+      withdrawalLimit: 1000.00
+    };
+  },
+
+  getBalance(): BalanceInquiry {
+    return {
+      balance: currentBalance,
+      availableCredit: 5000.00,
+      withdrawalLimit: 1000.00
+    };
+  },
+
+  updateBalance(newBalance: number): void {
+    currentBalance = newBalance;
+  },
+};

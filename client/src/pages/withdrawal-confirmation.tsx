@@ -1,11 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ATMLayout } from "@/components/ui/atm-layout";
 import { Button } from "@/components/ui/button";
 import { useATM } from "@/contexts/atm-context";
 import { ArrowLeft, CheckCircle, DollarSign } from "lucide-react";
 
 export default function WithdrawalConfirmationPage() {
-  const { navigateTo, withdrawalAmount } = useATM();
+  const { navigateTo, withdrawalAmount, showNotification } = useATM();
+  const queryClient = useQueryClient();
   
   const { data: accountDetails, isLoading } = useQuery({
     queryKey: ['/api/accounts/details'],
@@ -14,13 +15,43 @@ export default function WithdrawalConfirmationPage() {
   const { data: balanceData, isLoading: balanceLoading } = useQuery({
     queryKey: ['/api/accounts/balance'],
   });
+
+  const withdrawalMutation = useMutation({
+    mutationFn: async (amount: number) => {
+      const response = await fetch('/api/accounts/withdraw', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Withdrawal failed');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate and refetch balance data
+      queryClient.invalidateQueries({ queryKey: ['/api/accounts/balance'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/accounts/details'] });
+      navigateTo("/transaction-success");
+    },
+    onError: (error: Error) => {
+      showNotification(error.message, "error");
+    },
+  });
   
   const handleBack = () => {
     navigateTo("/withdrawal");
   };
   
   const handleProcessWithdrawal = () => {
-    navigateTo("/transaction-success");
+    if (withdrawalAmount) {
+      withdrawalMutation.mutate(withdrawalAmount);
+    }
   };
   
   if (isLoading || balanceLoading) {
@@ -88,9 +119,10 @@ export default function WithdrawalConfirmationPage() {
         <Button 
           className="btn-primary rounded-lg py-2 px-4 flex-1 flex items-center justify-center"
           onClick={handleProcessWithdrawal}
+          disabled={withdrawalMutation.isPending}
         >
           <CheckCircle className="mr-2" />
-          Withdraw Cash
+          {withdrawalMutation.isPending ? "Processing..." : "Withdraw Cash"}
         </Button>
       </div>
     </ATMLayout>
