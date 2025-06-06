@@ -1,6 +1,6 @@
 import express from 'express';
 import serverless from 'serverless-http';
-
+const express = required('express');
 const app = express();
 
 app.get('/', (req, res) => {
