@@ -1,11 +1,10 @@
 import express from 'express';
-import serverless from 'serverless-http';
-const express = required('express');
+import { Request, Response } from 'express';
+
 const app = express();
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Express API working on Vercel!' });
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello from Vercel!');
 });
 
-module.exports = app;
-module.exports.handler = serverless(app);
+export default app; // ✅ No app.listen()
