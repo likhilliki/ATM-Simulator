@@ -78,8 +78,11 @@
     "zod-validation-error": "^3.4.1",
     "drizzle-orm": "^0.20.0",
     "pg": "^8.11.3",
-    "@vercel/node": "^3.0.0"
+    "@vercel/node":"^3.0.0"
   },
+  "engines:"{
+    "node":"^18.x"
+  }
   "devDependencies": {
     "@replit/vite-plugin-cartographer": "^0.2.3",
     "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
