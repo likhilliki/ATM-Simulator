@@ -11,9 +11,7 @@
       "src": "/(.*)",
       "dest": "api/index.ts"
     }
-  ]
-}
-{
+  ],
   "functions": {
     "api/index.ts": {
       "runtime": "vercel-node@3"
