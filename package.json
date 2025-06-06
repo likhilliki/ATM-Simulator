@@ -80,7 +80,7 @@
     "pg": "^8.11.3",
     "@vercel/node":"^3.0.0"
   },
-  "engines:"{
+  "engines":{
     "node":"^18.x"
   }
   "devDependencies": {
