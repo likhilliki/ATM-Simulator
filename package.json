@@ -75,11 +75,9 @@
     "wouter": "^3.7.0",
     "ws": "^8.18.0",
     "zod": "^3.25.13",
-    "zod-validation-error": "^3.4.1"
-    "express": "^4.18.2",
-    "drizzle-orm": "...",
-    "zod": "...",
-    "pg": "...",
+    "zod-validation-error": "^3.4.1",
+    "drizzle-orm": "^0.20.0",
+    "pg": "^8.11.3",
     "@vercel/node": "^3.0.0"
   },
   "devDependencies": {
